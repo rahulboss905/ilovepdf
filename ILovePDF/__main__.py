@@ -84,8 +84,9 @@ class Bot(ILovePDF):
             BANNED_USR_DB.extend(b_users)
             BANNED_GRP_DB.extend(b_chats)
 
-            beta_users = await db.get_beta()
-            BETA.extend(beta_users)
+            # REMOVED BETA USER LOADING
+            # beta_users = await db.get_beta()
+            # BETA.extend(beta_users)
 
             # ------- Loads UsersId with custom THUMBNAIL ---------
             users = await db.get_all_users()  # Get all users' Data
@@ -299,7 +300,7 @@ if __name__ == "__main__":
     # Initialize and run the bot
     app = Bot()
     
-    # FIX: Use this instead of app.run() to avoid TypeError
+    # FIX: Use event loop instead of app.run()
     loop = asyncio.get_event_loop()
     try:
         loop.run_until_complete(app.start())
