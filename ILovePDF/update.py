@@ -5,7 +5,7 @@
 # thank drxxstrange@gmail.com for update.py ♥️
 
 
-file_name: str = r"ILovePDF\update.py"  # Fixed: Added raw string prefix
+file_name: str = r"ILovePDF\update.py"  # FIX: Added raw string prefix
 
 import os, logging, dotenv
 from subprocess import run
