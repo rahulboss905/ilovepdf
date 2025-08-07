@@ -159,7 +159,7 @@ class Database:
         Retrieve a list of banned users and chats from the database.
 
         This method queries the users and groups collections to find
-        all entries where the 'banned' field is not empty or just whitespace.
+        all entries where the 'banned' field exists (regardless of value).
         It returns two lists: one containing the IDs of banned users and
         the other containing the IDs of banned chats.
 
@@ -168,8 +168,9 @@ class Database:
                 - A list of banned user IDs.
                 - A list of banned chat IDs.
         """
-        users = self.col.find({"banned": {"$regex": "^(?!\s*$).+"}})
-        chats = self.grp.find({"banned": {"$regex": "^(?!\s*$).+"}})
+        # FIX: Simplified query to check for existence of 'banned' field
+        users = self.col.find({"banned": {"$exists": True}})
+        chats = self.grp.find({"banned": {"$exists": True}})
         b_chats = [chat["id"] async for chat in chats]
         b_users = [user["id"] async for user in users]
         return b_users, b_chats
@@ -182,7 +183,7 @@ class Database:
         Returns:
             List[int]: A list of beta user IDs.
         """
-        users = self.col.find({"beta": {"$regex": "^(?!\s*$).+"}})
+        users = self.col.find({"beta": {"$exists": True}})
         beta_users = [user["id"] async for user in users]
         return beta_users
 
