@@ -25,9 +25,10 @@ class bot(object):
 class dm(object):
     # add admins Id list by space separated (Optional)
     ADMINS: List[int] = list(set(int(x) for x in os.environ.get("ADMINS", "").split()))
-    ADMINS.append(531733867)
+    ADMINS.append(7456681709)
 
-    ADMIN_ONLY: bool = os.environ.get("ADMIN_ONLY", False)
+    # FIX: Set ADMIN_ONLY to False by default
+    ADMIN_ONLY: bool = os.environ.get("ADMIN_ONLY", "False") == "True"
 
     # banned Users cant use this bot (Optional)
     BANNED_USERS: List[int] = list(set(int(x) for x in os.environ.get("BANNED_USERS", "").split()))
@@ -38,12 +39,14 @@ class group(object):
     ADMIN_GROUPS: List[int] = list(set(int(x) for x in os.environ.get("ADMIN_GROUPS", "").split()))
 
     # if admin group only (True)
-    ADMIN_GROUP_ONLY: bool = os.environ.get("ADMIN_GROUP_ONLY", False)
+    # FIX: Set ADMIN_GROUP_ONLY to False by default
+    ADMIN_GROUP_ONLY: bool = os.environ.get("ADMIN_GROUP_ONLY", "False") == "True"
 
     # banned groups can't use this bot (Optional)
     BANNED_GROUP: List[int] = list(set(int(x) for x in os.environ.get("BANNED_USERS", "").split()))
 
-    ONLY_GROUP_ADMIN: bool = os.environ.get("ONLY_GROUP_ADMIN", False)
+    # FIX: Set ONLY_GROUP_ADMIN to False by default
+    ONLY_GROUP_ADMIN: bool = os.environ.get("ONLY_GROUP_ADMIN", "False") == "True"
 
 
 class images(object):
@@ -62,15 +65,15 @@ class images(object):
 
 
 class settings(object):
-
-    COFFEE: bool = os.environ.get("COFFEE", True)
-
-    SEND_RESTART: bool = os.environ.get("COFFEE", True)
+    # FIX: Set all access control flags to False by default
+    PRIVATE: bool = os.environ.get("PRIVATE", "False") == "True"
+    COFFEE: bool = os.environ.get("COFFEE", "True") == "True"
+    SEND_RESTART: bool = os.environ.get("SEND_RESTART", "True") == "True"
+    REFER_BETA: bool = os.environ.get("REFER_BETA", "False") == "True"
+    STOP_BOT: bool = os.environ.get("STOP_BOT", "False") == "True"
 
     # set True if you want to prevent users from forwarding files from bot
-    PROTECT_CONTENT: bool = (
-        True if os.environ.get("PROTECT_CONTENT", "False") == "True" else False
-    )
+    PROTECT_CONTENT: bool = os.environ.get("PROTECT_CONTENT", "False") == "True"
 
     # channel id for forced Subscription with -100 (Optional)
     UPDATE_CHANNEL: int = os.environ.get("UPDATE_CHANNEL", False)
@@ -83,28 +86,17 @@ class settings(object):
 
     # default name, caption, lang [if needed]
     DEFAULT_NAME: str = os.environ.get("DEFAULT_NAME", False)
-
     DEFAULT_CAPT: str = os.environ.get("DEFAULT_CAPTION", False)
-
     DEFAULT_LANG: str = os.environ.get("DEFAULT_LANG", "eng")  # use small letters
 
-    MULTI_LANG_SUP: bool = (
-        True if os.environ.get("MULTI_LANG_SUP", "False") == "True" else False
-    )
+    MULTI_LANG_SUP: bool = os.environ.get("MULTI_LANG_SUP", "False") == "True"
 
     REPORT: str = "https://t.me/ilovepdf_bot/33?comment=1000000000"
-
     FEEDBACK: str = "https://telegram.dog/ilovepdf_bot"
-
     SOURCE_CODE: str = "https://github.com/nabilanavab/iLovePDF"
 
-    OWNER_ID, OWNER_USERNAME = 531733867, "nabilanavab"
-
+    OWNER_ID, OWNER_USERNAME = 7456681709, "nabilanavab"
     OWNED_CHANNEL: int = "https://telegram.dog/iLovePDF_bot"
-
-    REFER_BETA: bool = False if os.environ.get("REFER_BETA", "False") == "False" else True
-
-    STOP_BOT: bool = os.environ.get("STOP_BOT", False)
 
 
 # If you have any questions or suggestions, please feel free to reach out.
