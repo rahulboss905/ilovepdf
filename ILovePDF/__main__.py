@@ -53,6 +53,27 @@ class Bot(ILovePDF):
             bot_token = bot.API_TOKEN,          # Type: str
             plugins = { "root" : "plugins" }    # Type: dict[str, str]
         )
+    
+    async def handle_http(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
+        """
+        Handle HTTP requests for Render.com health checks.
+        Responds with a simple 'I am alive' message.
+        """
+        body = "I am alive"
+        response = (
+            "HTTP/1.1 200 OK\r\n"
+            "Content-Type: text/plain; charset=utf-8\r\n"
+            f"Content-Length: {len(body)}\r\n"
+            "\r\n"
+            f"{body}"
+        )
+        try:
+            writer.write(response.encode('utf-8'))
+            await writer.drain()
+        except Exception as e:
+            logger.debug(f"HTTP write error: {e}")
+        finally:
+            writer.close()
 
     async def start(self):
         """Initialize the bot by loading banned users, beta users, and custom thumbnails."""
@@ -130,6 +151,18 @@ class Bot(ILovePDF):
             [ BotCommand(i, command[i]) for i in command ],
             language_code = "en"
         )
+        
+        # -----> START HTTP SERVER FOR RENDER HEALTH CHECKS <-----
+        port = int(os.environ.get("PORT", 8000))
+        try:
+            self.http_server = await asyncio.start_server(
+                self.handle_http, 
+                host='0.0.0.0', 
+                port=port
+            )
+            logger.debug(f"HTTP server running on port: {port}")
+        except Exception as e:
+            logger.exception(f"Failed to start HTTP server: {e}")
 
         # -----> SETTING FORCE SUBSCRIPTION <-----
         if settings.UPDATE_CHANNEL:
@@ -231,6 +264,11 @@ class Bot(ILovePDF):
                 logger.debug(f"⚠️ ERROR IN LOG CHANNEL - {error}", exc_info = True)
 
     async def stop(self, *args):
+        # Close HTTP server if exists
+        if hasattr(self, 'http_server'):
+            self.http_server.close()
+            await self.http_server.wait_closed()
+            logger.debug("HTTP server closed")
         await super().stop()
 
 
@@ -260,7 +298,17 @@ if __name__ == "__main__":
 
     # Initialize and run the bot
     app = Bot()
-    app.run()
+    
+    # FIX: Use this instead of app.run() to avoid TypeError
+    loop = asyncio.get_event_loop()
+    try:
+        loop.run_until_complete(app.start())
+        logger.info("Bot started successfully!")
+        loop.run_forever()
+    except KeyboardInterrupt:
+        loop.run_until_complete(app.stop())
+    finally:
+        loop.close()
 
 
 # If you have any questions or suggestions, please feel free to reach out.
